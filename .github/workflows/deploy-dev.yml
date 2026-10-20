@@ -1,9 +1,9 @@
-name: Deploy Prod
+name: Deploy Dev
 
 on:
   push:
     branches:
-      - main
+      - dev
   workflow_dispatch:
 
 jobs:
@@ -19,15 +19,15 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd /root/proyecto-prod
+            cd /root/proyecto-dev
             git fetch
-            git checkout ${{ secrets.MAIN_BRANCH }}
-            git pull origin main
+            git checkout ${{ secrets.DEV_BRANCH }}
+            git pull origin dev
             
-            # Crear archivo .env usando la secret ENV_PROD
-            echo "${{ secrets.ENV_PROD }}" > .env
+            # Escribir archivo .env
+            echo "${{ secrets.ENV_DEV }}" > .env
             
-            # Levantar contenedor en el puerto 8000
+            # Reconstruir contenedor en puerto 8083
             docker compose down || true
-            PORT=8082 docker compose up -d --build
+            PORT=8083 docker compose up -d --build
             exit
